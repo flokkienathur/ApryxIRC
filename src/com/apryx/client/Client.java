@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Client implements Runnable{
 	
@@ -15,12 +16,15 @@ public class Client implements Runnable{
 	private ArrayList<ClientConnectionListener> connectionListeners;
 	private ArrayList<ClientListener> messageListener;
 	
+	private HashMap<String, Object> attributes;
+	
 	private PrintWriter out;
 	private BufferedReader in;
 	
 	public Client(){
 		connectionListeners = new ArrayList<ClientConnectionListener>();
 		messageListener = new ArrayList<ClientListener>();
+		attributes = new HashMap<String, Object>();
 	}
 	
 	public void async(){
@@ -56,7 +60,6 @@ public class Client implements Runnable{
 			}
 			
 		}catch(Exception e){
-			e.printStackTrace();
 		}
 		disconnect();
 	}
@@ -138,6 +141,27 @@ public class Client implements Runnable{
 		for(ClientConnectionListener listener : connectionListeners){
 			listener.onDisconnect(this);
 		}
+	}
+	
+	public void setAttribute(String attr, Object value){
+		attributes.put(attr, value);
+	}
+	
+	public Object getAttribute(String attr){
+		return attributes.get(attr);
+	}
+	
+	public void setAttribute(Object value){
+		attributes.put(value.getClass().getName(), value);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> T getAttribute(Class<T> attr){
+		Object value = attributes.get(attr.getName());
+		if(value.getClass() == attr)
+			return (T) value;
+		else
+			return null;
 	}
 	
 }

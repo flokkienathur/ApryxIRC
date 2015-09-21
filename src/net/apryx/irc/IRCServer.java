@@ -20,7 +20,7 @@ public class IRCServer extends Server{
 	@Override
 	public void onDisconnect(Client client) {
 		super.onDisconnect(client);
-		System.out.println("Client connected!");
+		System.out.println("Client disconnected!");
 		
 		//do disconnect stuff
 	}
